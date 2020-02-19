@@ -53,4 +53,5 @@ dkms.conf
 
 # Application Custom
 laysim.bin
+*.edj
 
