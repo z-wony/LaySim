@@ -31,6 +31,9 @@ static char *font_color[6] = {
 
 #define log(fmt, arg...)	fprintf(stderr, _color_green"%s(%d)> "_color_reset fmt"\n", __FUNCTION__, (int)__LINE__, ##arg)
 
+#define TIMER_INTERVAL_MSEC (20)
+#define TIMER_INTERVAL_SEC_F  (TIMER_INTERVAL_MSEC / 1000.0)
+
 typedef enum {
     PLAYING_READY = 0,
     PLAYING_START = 1,
@@ -40,10 +43,11 @@ typedef enum {
 
 typedef struct _playing_context_s {
     playing_state_e state;
-    long time_ms;
+    long long time_us;
     long start_time_ms;
     Evas_Object *layout;
     Ecore_Timer *timer;
+    int speed_control;
 } ply_ctx_s;
 
 static void _set_playing_button(Evas_Object *layout, ply_ctx_s *ctx);
@@ -61,7 +65,7 @@ static void _play_button_clicked_cb(void *data, Evas_Object *obj, void *event_in
     switch (ctx->state) {
         case PLAYING_STOP:
             elm_object_part_text_set(layout, "area/control/timer/timer", "00:00.000 ms");
-            ctx->time_ms = 0L;
+            ctx->time_us = 0LL;
             ctx->start_time_ms = 0L;
         case PLAYING_PAUSE:
             if (ctx->timer) {
@@ -69,7 +73,7 @@ static void _play_button_clicked_cb(void *data, Evas_Object *obj, void *event_in
                 ctx->timer = NULL;
             }
         case PLAYING_READY:
-            ctx->timer = ecore_timer_add(0.1, _simulator_timer_cb, (void *)ctx);
+            ctx->timer = ecore_timer_add(TIMER_INTERVAL_SEC_F, _simulator_timer_cb, (void *)ctx);
             ctx->state = PLAYING_START;
             break;
         default:
@@ -101,15 +105,15 @@ static void _stop_button_clicked_cb(void *data, Evas_Object *obj, void *event_in
     Evas_Object *layout = ctx->layout;
 
     switch (ctx->state) {
+        case PLAYING_PAUSE:
         case PLAYING_STOP:
             elm_object_part_text_set(layout, "area/control/timer/timer", "00:00.000 ms");
-            ctx->time_ms = 0L;
+            ctx->time_us = 0LL;
             ctx->start_time_ms = 0L;
             if (ctx->timer) {
                 ecore_timer_del(ctx->timer);
                 ctx->timer = NULL;
             }
-        case PLAYING_PAUSE:
             ctx->state = PLAYING_STOP;
             break;
         case PLAYING_START:
@@ -157,10 +161,12 @@ static Eina_Bool _simulator_timer_cb(void *data)
     ply_ctx_s *ctx = (ply_ctx_s *)data;
     Evas_Object *layout = ctx->layout;
 
-    ctx->time_ms += 100;
-    long tval = ctx->time_ms;
+    ctx->time_us += TIMER_INTERVAL_MSEC * 1000 / ctx->speed_control;
+    long long tval = ctx->time_us;
     char timer_str[40];
-    snprintf(timer_str, 40, "%02ld:%02ld.%03ld ms", (tval / 60000), ((tval % 6000) / 1000), (tval % 1000));
+    snprintf(timer_str, 40, "%02ld:%02ld.%03ld ms",
+        (long)(tval / 60000000LL), (long)((tval % 6000000LL) / 1000000LL),
+        (long)((tval % 1000000LL) / 1000LL));
     elm_object_part_text_set(layout, "area/control/timer/timer", timer_str);
 
     return ECORE_CALLBACK_RENEW;
@@ -169,7 +175,7 @@ static Eina_Bool _simulator_timer_cb(void *data)
 int main(int argc, char *argv[])
 {
     char *pkg = "LaySim Editor";
-    ply_ctx_s ctx = { PLAYING_READY, 0L, 0L, NULL, NULL };
+    ply_ctx_s ctx = { PLAYING_READY, 0LL, 0L, NULL, NULL, 200 };
 
     elm_init(argc, argv);
     elm_policy_set(ELM_POLICY_QUIT, ELM_POLICY_QUIT_LAST_WINDOW_CLOSED);
