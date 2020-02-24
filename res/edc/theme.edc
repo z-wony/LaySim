@@ -1,0 +1,167 @@
+
+collections {
+  group {
+    name: "base";
+    parts {
+      part {
+        name: "background";
+        type: RECT;
+        scale: 1;
+        desc {
+          state: "default" 0.0;
+          color: 255 255 255 255;
+          min: 1000 800;
+        }
+      }
+
+      //// Define Areas
+      // 1. control area
+      part {
+        name: "area/control";
+        type: RECT;
+        scale: 1;
+        desc {
+          state: "default" 0.0;
+          color: 194 224 174 255;
+          rel1.relative: 0.0 0.0;
+          rel2.relative: 1.0 0.25;
+          rel.to: "background";
+        }
+      }
+      // 2. simulation area
+      part {
+        name: "area/sim";
+        type: RECT;
+        scale: 1;
+        desc {
+          state: "default" 0.0;
+          color: 188 228 229 255;
+          rel1.relative: 0.0 1.0;
+          rel1.to: "area/control";
+          rel2.relative: 1.0 1.0;
+          rel2.to: "background";
+        }
+      }
+
+      //// Define Control Areas
+      // 1-1. playing control
+      part {
+        name: "area/control/playing";
+        type: SPACER;
+        scale: 1;
+        desc {
+          state: "default" 0.0;
+          //color: 0 0 255 120;
+          rel1.relative: 0.05 0.5;
+          rel2.relative: 0.25 0.9;
+          rel.to: "area/control";
+        }
+      }
+      // 1-2. timer view
+      part {
+        name: "area/control/timer";
+        type: RECT;
+        scale: 1;
+        desc {
+          state: "default" 0.0;
+          color: 0 0 255 100;
+          rel1.relative: 0.35 0.3;
+          rel2.relative: 0.65 0.7;
+          rel.to: "area/control";
+        }
+      }
+      // 1-3. speed control
+      part {
+        name: "area/control/speed";
+        type: RECT;
+        scale: 1;
+        desc {
+          state: "default" 0.0;
+          color: 0 0 255 120;
+          rel1.relative: 0.70 0.5;
+          rel2.relative: 0.95 0.9;
+          rel.to: "area/control";
+        }
+      }
+
+      // 1-1-1. playing - play
+      part {
+        name: "area/control/playing/play";
+        type: SWALLOW;
+        scale: 1;
+        desc {
+          state: "default" 0.0;
+          visible: 1;
+          rel1.relative: 0.0 0.1;
+          rel2.relative: 0.3 0.9;
+          rel.to: "area/control/playing";
+        }
+      }
+      // 1-1-2. playing - pause
+      part {
+        name: "area/control/playing/pause";
+        type: SWALLOW;
+        scale: 1;
+        desc {
+          state: "default" 0.0;
+          visible: 1;
+          rel1.relative: 0.35 0.1;
+          rel2.relative: 0.65 0.9;
+          rel.to: "area/control/playing";
+        }
+      }
+      // 1-1-3. playing - stop
+      part {
+        name: "area/control/playing/stop";
+        type: SWALLOW;
+        scale: 1;
+        desc {
+          state: "default" 0.0;
+          visible: 1;
+          rel1.relative: 0.7 0.1;
+          rel2.relative: 1.0 0.9;
+          rel.to: "area/control/playing";
+        }
+      }
+      // 1-2-1. timer
+      part {
+        name: "area/control/timer/timer";
+        type: TEXT;
+        scale: 1;
+        desc {
+          state: "default" 0.0;
+          fixed: 1 1;
+          rel1.relative: 0.0 0.0;
+          rel2.relative: 1.0 1.0;
+          rel.to: "area/control/timer";
+          text {
+            size: 30;
+            min: 1 1;
+            text: "00:00.000 ms";
+          }
+        }
+      }
+      // 1-3-1. speed label
+      part {
+        name: "area/control/speed/label";
+        type: TEXT;
+        scale: 1;
+        desc {
+          state: "default" 0.0;
+          fixed: 1 1;
+          rel1.relative: 0.0 0.0;
+          rel2.relative: 0.4 1.0;
+          rel.to: "area/control/speed";
+          color: 0 0 0 255;
+          text {
+            size: 20;
+            min: 1 0;
+            align: 0.0 0.5;
+            text: "x 1/200";
+          }
+        }
+      }
+
+    }
+  }
+}

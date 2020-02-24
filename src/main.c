@@ -29,8 +29,35 @@ static char *font_color[6] = {
 #define _color_blue		"\033[35m"
 #define _color_cyan		"\033[36m"
 
-
 #define log(fmt, arg...)	fprintf(stderr, _color_green"%s(%d)> "_color_reset fmt"\n", __FUNCTION__, (int)__LINE__, ##arg)
+
+static void _set_playing_button(Evas_Object *layout)
+{
+    Evas_Object *playing_play = elm_button_add(layout);
+    Evas_Object *playing_pause = elm_button_add(layout);
+    Evas_Object *playing_stop = elm_button_add(layout);
+
+    elm_object_text_set(playing_play, "Play");
+    elm_object_text_set(playing_pause, "Pause");
+    elm_object_text_set(playing_stop, "Stop");
+
+    elm_object_part_content_set(layout, "area/control/playing/play", playing_play);
+    elm_object_part_content_set(layout, "area/control/playing/pause", playing_pause);
+    elm_object_part_content_set(layout, "area/control/playing/stop", playing_stop);
+
+    evas_object_show(playing_play);
+    evas_object_show(playing_pause);
+    evas_object_show(playing_stop);
+}
+
+static void _set_timer_panel(Evas_Object *layout)
+{
+    Evas_Object *timer_label = elm_label_add(layout);
+
+    elm_object_text_set(timer_label, "<font size=20>00:00:00.000 ms</font>");
+    elm_object_part_content_set(layout, "area/control/timer/timer", timer_label);
+    evas_object_show(timer_label);
+}
 
 int main(int argc, char *argv[])
 {
@@ -51,6 +78,9 @@ int main(int argc, char *argv[])
 //    evas_object_resize(ly, 500, 500);
 //    evas_object_move(ly, 0, 0);
     evas_object_show(ly);
+
+    _set_playing_button(ly);
+//    _set_timer_panel(ly);
 
 	log("hello");
 
