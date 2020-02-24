@@ -168,33 +168,31 @@ static Eina_Bool _simulator_timer_cb(void *data)
 
 int main(int argc, char *argv[])
 {
-	char *pkg = "LaySim Editor";
+    char *pkg = "LaySim Editor";
     ply_ctx_s ctx = { PLAYING_READY, 0L, 0L, NULL, NULL };
 
-	elm_init(argc, argv);
-	elm_policy_set(ELM_POLICY_QUIT, ELM_POLICY_QUIT_LAST_WINDOW_CLOSED);
+    elm_init(argc, argv);
+    elm_policy_set(ELM_POLICY_QUIT, ELM_POLICY_QUIT_LAST_WINDOW_CLOSED);
 
-	Evas_Object *win = elm_win_util_standard_add(pkg, pkg);
-	elm_win_autodel_set(win, EINA_TRUE);
-	evas_object_resize(win, 550, 550);
-	evas_object_show(win);
+    Evas_Object *win = elm_win_util_standard_add(pkg, pkg);
+    elm_win_autodel_set(win, EINA_TRUE);
+    evas_object_resize(win, 550, 550);
+    evas_object_show(win);
 
     Evas_Object *ly = elm_layout_add(win);
     elm_layout_file_set(ly, "res/edc/theme.edj", "base");
     elm_win_resize_object_add(win, ly);
     evas_object_size_hint_weight_set(ly, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
-//    evas_object_resize(ly, 500, 500);
-//    evas_object_move(ly, 0, 0);
     evas_object_show(ly);
 
     ctx.layout = ly;
 
     _set_playing_button(ly, &ctx);
 
-	log("hello");
+    log("hello");
 
-	elm_run();	
-	elm_exit();
+    elm_run();	
+    elm_exit();
 
-	return 0;
+    return 0;
 }
